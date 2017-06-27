@@ -11,9 +11,7 @@ namespace IT2_backend.RoastIO
 {
     public partial class ReceiveRoastData : System.Web.UI.Page
     {
-        private string connectionString =
-            "";
-
+       
         protected void Page_Load(object sender, EventArgs e)
         {
             var roast = new Roast();
@@ -29,7 +27,7 @@ namespace IT2_backend.RoastIO
                     VALUES
                     (@RoastId, @ElapsedTime, @Temperature, @DebugData)";
 
-            var _conn = new SqlConnection(connectionString);
+            var _conn = new SqlConnection(ConnectionString.connString);
 
             var sqlCommand = new SqlCommand(command);
             sqlCommand.Parameters.AddWithValue("@RoastId", ((object)roast.Id) ?? DBNull.Value);
