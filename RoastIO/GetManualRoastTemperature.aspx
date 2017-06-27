@@ -1,0 +1,2 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GetManualRoastTemperature.aspx.cs" Inherits="IT2_backend.RoastIO.GetManualRoastTemperature" %>
+<asp:Literal runat="server" ID="TemperatureLiteral"/>

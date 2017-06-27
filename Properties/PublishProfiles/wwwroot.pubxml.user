@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\inetpub\wwwroot\IT2</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/IT2_backend.dll">
+      <publishTime>12/06/2016 23:21:59</publishTime>
+    </File>
+    <File Include="Default.aspx">
+      <publishTime>09/16/2015 21:11:00</publishTime>
+    </File>
+    <File Include="RoastIO/GetManualRoastTemperature.aspx">
+      <publishTime>09/09/2015 22:10:36</publishTime>
+    </File>
+    <File Include="RoastIO/GetProfile.aspx">
+      <publishTime>10/21/2015 21:43:50</publishTime>
+    </File>
+    <File Include="RoastIO/InterfaceCom.aspx">
+      <publishTime>08/06/2015 22:37:02</publishTime>
+    </File>
+    <File Include="RoastIO/ReceiveCurrentTemperature.aspx">
+      <publishTime>07/29/2015 22:51:54</publishTime>
+    </File>
+    <File Include="RoastIO/ReceiveRoastData.aspx">
+      <publishTime>09/09/2015 21:32:04</publishTime>
+    </File>
+    <File Include="RoastIO/RoasterStatus.aspx">
+      <publishTime>08/06/2015 21:56:47</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>12/06/2016 23:22:00</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
