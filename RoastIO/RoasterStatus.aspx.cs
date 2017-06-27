@@ -110,6 +110,12 @@ namespace IT2_backend.RoastIO
                         if (roast.StartTime == null)
                             roast.StartTime = DateTime.Now;
 
+                        if(String.IsNullOrEmpty(roast.ProfileText))
+                        {
+                            Profile profile = new Profile((int)roast.ProfileId);
+                            roast.ProfileText = profile.ProfileText;
+                        }
+
                         roast.StatusId = receivedCode;
                     }
                     else if (roast.StatusId == (int)RoastStatus.StartManualRoasting ||
