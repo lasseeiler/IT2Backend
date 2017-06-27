@@ -41,9 +41,6 @@ namespace IT2_backend.RoastIO
 
     public partial class InterfaceCom : System.Web.UI.Page
     {
-        private string connectionString =
-            "";
-
         protected void Page_Load(object sender, EventArgs e)
         {
             var jsonString = Request.Form["data"];
@@ -130,7 +127,7 @@ namespace IT2_backend.RoastIO
 
         private long GetElapsedTime(int roastId)
         {
-            var conn = new SqlConnection(connectionString);
+            var conn = new SqlConnection(ConnectionString.connString);
             var command =
                 @"SELECT Top (1) LogTime, ElapsedTime
                 FROM RoastLog
@@ -157,7 +154,7 @@ namespace IT2_backend.RoastIO
 
         private List<Profile> LoadProfilesFromDb()
         {
-            var conn = new SqlConnection(connectionString);
+            var conn = new SqlConnection(ConnectionString.connString);
             var command =
                 @"SELECT Id, Name, ProfileText
                 FROM Profile 

@@ -17,17 +17,14 @@ namespace IT2_backend.Classes
 
         private readonly SqlConnection _conn;
 
-        private string connectionString =
-            "";
-
         public Profile()
         {
-            _conn = new SqlConnection(connectionString);
+            _conn = new SqlConnection(ConnectionString.connString);
         }
 
         public Profile(int id)
         {
-            _conn = new SqlConnection(connectionString);
+            _conn = new SqlConnection(ConnectionString.connString);
 
             Id = id;
             LoadProfileObjectFromDb(Id.Value);

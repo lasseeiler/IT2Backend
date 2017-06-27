@@ -48,19 +48,16 @@ namespace IT2_backend.Classes
 
         private readonly SqlConnection _conn;
 
-        private string connectionString =
-            "";
-
         public Roast()
         {
-            _conn = new SqlConnection(connectionString);
+            _conn = new SqlConnection(ConnectionString.connString);
 
             LoadOrCreateActiveRoast();
         }
 
         public Roast(int id)
         {
-            _conn = new SqlConnection(connectionString);
+            _conn = new SqlConnection(ConnectionString.connString);
 
             Id = id;
 
