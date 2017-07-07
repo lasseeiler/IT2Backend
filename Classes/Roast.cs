@@ -45,6 +45,7 @@ namespace IT2_backend.Classes
         public double? CurrentTemp { get; set; }
         public int? ElapsedTotalTime { get; set; }
         public DateTime? LastUpdate { get; set; }
+        public string ProfileText { get; set; }
 
         private readonly SqlConnection _conn;
 
@@ -68,7 +69,7 @@ namespace IT2_backend.Classes
         private void LoadRoastObjectFromDb(int id)
         {
             var command = 
-            @"SELECT TOP (1) Id, ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate  
+            @"SELECT TOP (1) Id, ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate, ProfileText  
             FROM Roast 
             WHERE (Id = @RoastID)";
 
@@ -91,6 +92,7 @@ namespace IT2_backend.Classes
                 CurrentTemp = (sdr["CurrentTemp"] == DBNull.Value) ? null : (double?)sdr["CurrentTemp"];
                 ElapsedTotalTime = (sdr["ElapsedTotalTime"] == DBNull.Value) ? null : (int?)sdr["ElapsedTotalTime"];
                 LastUpdate = (!string.IsNullOrEmpty(sdr["LastUpdate"].ToString()) ? DateTime.Parse(sdr["LastUpdate"].ToString()) : (DateTime?)null);
+                ProfileText = sdr["ProfileText"].ToString();
             }
             _conn.Close();
         }
@@ -127,6 +129,7 @@ namespace IT2_backend.Classes
             CurrentTemp = null;
             ElapsedTotalTime = null;
             LastUpdate = null;
+            ProfileText = "";
 
             Save();
             HttpContext.Current.Cache["ActiveRoastID"] = Id;
@@ -137,9 +140,9 @@ namespace IT2_backend.Classes
             if (!Id.HasValue)
             {
                 var command =
-                    @"SET NOCOUNT ON; INSERT INTO Roast(ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate)
+                    @"SET NOCOUNT ON; INSERT INTO Roast(ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate, ProfileText)
                     VALUES
-                    (@ProfileId, @StatusId, @StartTime, @EndTime, @ManualControlStartTime, @CurrentStep, @CurrentTargetTemp, @CurrentTemp, @ElapsedTotalTime, @LastUpdate); SELECT CAST(SCOPE_IDENTITY() AS int) AS lastId";
+                    (@ProfileId, @StatusId, @StartTime, @EndTime, @ManualControlStartTime, @CurrentStep, @CurrentTargetTemp, @CurrentTemp, @ElapsedTotalTime, @LastUpdate, @ProfileText); SELECT CAST(SCOPE_IDENTITY() AS int) AS lastId";
             
                 var sqlCommand = new SqlCommand(command);
                 sqlCommand.Parameters.AddWithValue("@ProfileId", ((object)ProfileId) ?? DBNull.Value);
@@ -152,7 +155,8 @@ namespace IT2_backend.Classes
                 sqlCommand.Parameters.AddWithValue("@CurrentTemp", ((object)CurrentTemp) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@ElapsedTotalTime", ((object)ElapsedTotalTime) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@LastUpdate", ((object)LastUpdate) ?? DBNull.Value);
-            
+                sqlCommand.Parameters.AddWithValue("@ProfileText", ProfileText);
+
                 _conn.Open();
                 sqlCommand.Connection = _conn;
                 var sdr = sqlCommand.ExecuteReader();
@@ -168,7 +172,7 @@ namespace IT2_backend.Classes
             else
             {
                 var command =
-                    @"UPDATE Roast SET ProfileId = @ProfileId, StatusId = @StatusId, StartTime = @StartTime, EndTime = @EndTime, ManualControlStartTime = @ManualControlStartTime, CurrentStep = @CurrentStep, CurrentTargetTemp = @CurrentTargetTemp, CurrentTemp = @CurrentTemp, ElapsedTotalTime = @ElapsedTotalTime, LastUpdate = @LastUpdate WHERE (Id = @RoastId)";
+                    @"UPDATE Roast SET ProfileId = @ProfileId, StatusId = @StatusId, StartTime = @StartTime, EndTime = @EndTime, ManualControlStartTime = @ManualControlStartTime, CurrentStep = @CurrentStep, CurrentTargetTemp = @CurrentTargetTemp, CurrentTemp = @CurrentTemp, ElapsedTotalTime = @ElapsedTotalTime, LastUpdate = @LastUpdate, ProfileText = @ProfileText WHERE (Id = @RoastId)";
 
                 var sqlCommand = new SqlCommand(command);
                 sqlCommand.Parameters.AddWithValue("@RoastId", ((object)Id.Value));
@@ -182,6 +186,7 @@ namespace IT2_backend.Classes
                 sqlCommand.Parameters.AddWithValue("@CurrentTemp", ((object)CurrentTemp) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@ElapsedTotalTime", ((object)ElapsedTotalTime) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@LastUpdate", ((object)LastUpdate) ?? DBNull.Value);
+                sqlCommand.Parameters.AddWithValue("@ProfileText", ProfileText);
 
                 _conn.Open();
                 sqlCommand.Connection = _conn;
