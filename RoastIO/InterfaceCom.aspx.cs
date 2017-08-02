@@ -53,7 +53,7 @@ namespace IT2_backend.RoastIO
             var interfaceObject = new JavaScriptSerializer().Deserialize<InterfaceObject>(jsonString);
             //var interfaceObject = new InterfaceObject();
 
-            var roast = new Roast();    
+            var roast = new Roast();
 
             switch (interfaceObject.Action)
             {
