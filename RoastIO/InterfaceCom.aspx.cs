@@ -24,7 +24,9 @@ namespace IT2_backend.RoastIO
         GetManualRoastTemperature = 90,
         DeleteProfile = 100,
         MasterReset = 110, 
-        RemoveProfile = 120
+        RemoveProfile = 120,
+        SetFirstCrack = 130,
+        SetSecondCrack = 140
     }
 
     public class InterfaceObject
@@ -44,10 +46,14 @@ namespace IT2_backend.RoastIO
         protected void Page_Load(object sender, EventArgs e)
         {
             var jsonString = Request.Form["data"];
+            if(String.IsNullOrEmpty(jsonString))
+            {
+                return;
+            }
             var interfaceObject = new JavaScriptSerializer().Deserialize<InterfaceObject>(jsonString);
             //var interfaceObject = new InterfaceObject();
 
-            var roast = new Roast();
+            var roast = new Roast();    
 
             switch (interfaceObject.Action)
             {
@@ -119,12 +125,60 @@ namespace IT2_backend.RoastIO
                         roast.Save();
                     }
                     break;
+                case (int)InterfaceAction.SetFirstCrack:
+                    int FirstElapsed = (int)GetElapsedTime(roast.Id ?? 0);
+                    if(FirstElapsed > 0)
+                    {
+                        roast.FirstCrackElapsed = FirstElapsed;
+                        roast.FirstCrackTemp = GetTemperatureAverage(roast.Id ?? 0, 3);
+                        roast.Save();
+                    }
+                    break;
+                case (int)InterfaceAction.SetSecondCrack:
+                    int SecondElapsed = (int)GetElapsedTime(roast.Id ?? 0);
+                    if (SecondElapsed > 0)
+                    {
+                        roast.SecondCrackElapsed = SecondElapsed;
+                        roast.SecondCrackTemp = GetTemperatureAverage(roast.Id ?? 0, 3);
+                        roast.Save();
+                    }
+                    break;
             }
 
             var json = new JavaScriptSerializer().Serialize(interfaceObject);
             StatusLiteral.Text = json;
         }
 
+        private double GetTemperatureAverage(int roastId, int count)
+        {
+            var conn = new SqlConnection(ConnectionString.connString);
+            var command =
+                @"SELECT AVG(Temperature) AS Temperature
+                FROM RoastLog
+                WHERE 
+                (Id IN (
+                    SELECT TOP (3) Id
+                    FROM RoastLog AS RoastLog_1
+                    WHERE (RoastId = @RoastId)
+                    ORDER BY ElapsedTime DESC
+                ))";
+
+            var sqlCommand = new SqlCommand(command);
+            sqlCommand.Parameters.AddWithValue("RoastId", roastId);
+
+            conn.Open();
+            sqlCommand.Connection = conn;
+            var sdr = sqlCommand.ExecuteReader();
+            double temperature = 0;
+            while (sdr.Read())
+            {
+                temperature = (double)sdr["Temperature"];
+            }
+            conn.Close();
+
+            temperature = Math.Round(temperature, 1);
+            return temperature;
+        }
         private long GetElapsedTime(int roastId)
         {
             var conn = new SqlConnection(ConnectionString.connString);

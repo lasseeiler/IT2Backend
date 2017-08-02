@@ -46,6 +46,10 @@ namespace IT2_backend.Classes
         public int? ElapsedTotalTime { get; set; }
         public DateTime? LastUpdate { get; set; }
         public string ProfileText { get; set; }
+        public int? FirstCrackElapsed { get; set; }
+        public int? SecondCrackElapsed { get; set; }
+        public double? FirstCrackTemp { get; set; }
+        public double? SecondCrackTemp { get; set; }
 
         private readonly SqlConnection _conn;
 
@@ -69,7 +73,7 @@ namespace IT2_backend.Classes
         private void LoadRoastObjectFromDb(int id)
         {
             var command = 
-            @"SELECT TOP (1) Id, ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate, ProfileText  
+            @"SELECT TOP (1) Id, ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate, ProfileText, FirstCrackElapsed, SecondCrackElapsed, FirstCrackTemp, SecondCrackTemp  
             FROM Roast 
             WHERE (Id = @RoastID)";
 
@@ -93,6 +97,10 @@ namespace IT2_backend.Classes
                 ElapsedTotalTime = (sdr["ElapsedTotalTime"] == DBNull.Value) ? null : (int?)sdr["ElapsedTotalTime"];
                 LastUpdate = (!string.IsNullOrEmpty(sdr["LastUpdate"].ToString()) ? DateTime.Parse(sdr["LastUpdate"].ToString()) : (DateTime?)null);
                 ProfileText = sdr["ProfileText"].ToString();
+                FirstCrackElapsed = (sdr["FirstCrackElapsed"] == DBNull.Value) ? null : (int?)sdr["FirstCrackElapsed"];
+                SecondCrackElapsed = (sdr["SecondCrackElapsed"] == DBNull.Value) ? null : (int?)sdr["SecondCrackElapsed"];
+                FirstCrackTemp = (sdr["FirstCrackTemp"] == DBNull.Value) ? null : (double?)sdr["FirstCrackTemp"];
+                SecondCrackTemp = (sdr["SecondCrackTemp"] == DBNull.Value) ? null : (double?)sdr["SecondCrackTemp"];
             }
             _conn.Close();
         }
@@ -130,6 +138,10 @@ namespace IT2_backend.Classes
             ElapsedTotalTime = null;
             LastUpdate = null;
             ProfileText = "";
+            FirstCrackElapsed = null;
+            SecondCrackElapsed = null;
+            FirstCrackTemp = null;
+            SecondCrackTemp = null;      
 
             Save();
             HttpContext.Current.Cache["ActiveRoastID"] = Id;
@@ -140,9 +152,9 @@ namespace IT2_backend.Classes
             if (!Id.HasValue)
             {
                 var command =
-                    @"SET NOCOUNT ON; INSERT INTO Roast(ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate, ProfileText)
+                    @"SET NOCOUNT ON; INSERT INTO Roast(ProfileId, StatusId, StartTime, EndTime, ManualControlStartTime, CurrentStep, CurrentTargetTemp, CurrentTemp, ElapsedTotalTime, LastUpdate, ProfileText, FirstCrackElapsed, SecondCrackElapsed, FirstCrackTemp, SecondCrackTemp)
                     VALUES
-                    (@ProfileId, @StatusId, @StartTime, @EndTime, @ManualControlStartTime, @CurrentStep, @CurrentTargetTemp, @CurrentTemp, @ElapsedTotalTime, @LastUpdate, @ProfileText); SELECT CAST(SCOPE_IDENTITY() AS int) AS lastId";
+                    (@ProfileId, @StatusId, @StartTime, @EndTime, @ManualControlStartTime, @CurrentStep, @CurrentTargetTemp, @CurrentTemp, @ElapsedTotalTime, @LastUpdate, @ProfileText, @FirstCrackElapsed, @SecondCrackElapsed, @FirstCrackTemp, @SecondCrackTemp); SELECT CAST(SCOPE_IDENTITY() AS int) AS lastId";
             
                 var sqlCommand = new SqlCommand(command);
                 sqlCommand.Parameters.AddWithValue("@ProfileId", ((object)ProfileId) ?? DBNull.Value);
@@ -156,7 +168,10 @@ namespace IT2_backend.Classes
                 sqlCommand.Parameters.AddWithValue("@ElapsedTotalTime", ((object)ElapsedTotalTime) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@LastUpdate", ((object)LastUpdate) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@ProfileText", ProfileText);
-
+                sqlCommand.Parameters.AddWithValue("@FirstCrackElapsed", ((object)FirstCrackElapsed) ?? DBNull.Value);
+                sqlCommand.Parameters.AddWithValue("@SecondCrackElapsed", ((object)SecondCrackElapsed) ?? DBNull.Value);
+                sqlCommand.Parameters.AddWithValue("@FirstCrackTemp", ((object)FirstCrackTemp) ?? DBNull.Value);
+                sqlCommand.Parameters.AddWithValue("@SecondCrackTemp", ((object)SecondCrackTemp) ?? DBNull.Value);
                 _conn.Open();
                 sqlCommand.Connection = _conn;
                 var sdr = sqlCommand.ExecuteReader();
@@ -172,7 +187,7 @@ namespace IT2_backend.Classes
             else
             {
                 var command =
-                    @"UPDATE Roast SET ProfileId = @ProfileId, StatusId = @StatusId, StartTime = @StartTime, EndTime = @EndTime, ManualControlStartTime = @ManualControlStartTime, CurrentStep = @CurrentStep, CurrentTargetTemp = @CurrentTargetTemp, CurrentTemp = @CurrentTemp, ElapsedTotalTime = @ElapsedTotalTime, LastUpdate = @LastUpdate, ProfileText = @ProfileText WHERE (Id = @RoastId)";
+                    @"UPDATE Roast SET ProfileId = @ProfileId, StatusId = @StatusId, StartTime = @StartTime, EndTime = @EndTime, ManualControlStartTime = @ManualControlStartTime, CurrentStep = @CurrentStep, CurrentTargetTemp = @CurrentTargetTemp, CurrentTemp = @CurrentTemp, ElapsedTotalTime = @ElapsedTotalTime, LastUpdate = @LastUpdate, ProfileText = @ProfileText, FirstCrackElapsed = @FirstCrackElapsed, SecondCrackElapsed = @SecondCrackElapsed, FirstCrackTemp = @FirstCrackTemp, SecondCrackTemp = @SecondCrackTemp WHERE (Id = @RoastId)";
 
                 var sqlCommand = new SqlCommand(command);
                 sqlCommand.Parameters.AddWithValue("@RoastId", ((object)Id.Value));
@@ -187,6 +202,10 @@ namespace IT2_backend.Classes
                 sqlCommand.Parameters.AddWithValue("@ElapsedTotalTime", ((object)ElapsedTotalTime) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@LastUpdate", ((object)LastUpdate) ?? DBNull.Value);
                 sqlCommand.Parameters.AddWithValue("@ProfileText", ProfileText);
+                sqlCommand.Parameters.AddWithValue("@FirstCrackElapsed", ((object)FirstCrackElapsed) ?? DBNull.Value);
+                sqlCommand.Parameters.AddWithValue("@SecondCrackElapsed", ((object)SecondCrackElapsed) ?? DBNull.Value);
+                sqlCommand.Parameters.AddWithValue("@FirstCrackTemp", ((object)FirstCrackTemp) ?? DBNull.Value);
+                sqlCommand.Parameters.AddWithValue("@SecondCrackTemp", ((object)SecondCrackTemp) ?? DBNull.Value);
 
                 _conn.Open();
                 sqlCommand.Connection = _conn;
