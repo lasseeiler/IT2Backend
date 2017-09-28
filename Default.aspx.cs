@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IT2_backend.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +12,8 @@ namespace IT2_backend
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            PushNotification pn = new PushNotification();
+            pn.SendNotification();
         }
     }
 }
