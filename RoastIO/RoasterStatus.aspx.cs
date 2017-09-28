@@ -108,9 +108,14 @@ namespace IT2_backend.RoastIO
                         roast.StatusId == receivedCode)
                     {
                         if (roast.StartTime == null)
+                        { 
                             roast.StartTime = DateTime.Now;
 
-                        if(String.IsNullOrEmpty(roast.ProfileText))
+                            PushNotification pn = new PushNotification();
+                            pn.SendNotification();
+                        }
+
+                        if (String.IsNullOrEmpty(roast.ProfileText))
                         {
                             Profile profile = new Profile((int)roast.ProfileId);
                             roast.ProfileText = profile.ProfileText;
@@ -149,7 +154,12 @@ namespace IT2_backend.RoastIO
                         roast.StatusId == receivedCode)
                     {
                         if (roast.StartTime == null)
+                        { 
                             roast.StartTime = DateTime.Now;
+
+                            PushNotification pn = new PushNotification();
+                            pn.SendNotification();
+                        }
                         if (roast.ManualControlStartTime == null)
                             roast.ManualControlStartTime = DateTime.Now;
 

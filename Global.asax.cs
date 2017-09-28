@@ -16,6 +16,8 @@ namespace IT2_backend
         {
 
             ConnectionString.connString = File.ReadAllText(Server.MapPath("/connstring.cs"));
+            PushNotification.userHash = File.ReadAllText(Server.MapPath("/user.cs"));
+            PushNotification.tokenHash = File.ReadAllText(Server.MapPath("/token.cs"));
         }
 
         protected void Session_Start(object sender, EventArgs e)

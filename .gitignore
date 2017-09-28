@@ -2,3 +2,6 @@
 obj/
 bin/
 connstring.cs
+token.cs
+user.cs
+packages/
